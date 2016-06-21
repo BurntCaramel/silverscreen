@@ -7,29 +7,30 @@ import VerEx from 'verbal-expressions'
 
 export const sourceType = 'vimeo'
 
-const vimeoURLRegEx = (() => {
-	const digitRE = VerEx().range('0', '9')
+const digitRE = VerEx().range('0', '9').stopAtFirst(true)
+
+const nameComponentRE = VerEx()
+.anythingBut(digitRE)
+.anythingBut('/')
+.then('/')
+.stopAtFirst(true)
 	
-	const nameComponentRE = VerEx()
-	.anythingBut(digitRE)
-	.anythingBut('/')
-	.then('/')
-	
-	return VerEx()
-	.startOfLine()
-	.maybe('http')
-	.maybe('s')
-	.maybe('://')
-	.maybe('www.')
-	.then('vimeo.com/')
-	.maybe('ondemand/')
-	.maybe(nameComponentRE)
-	.maybe(nameComponentRE)
-	.multiple(digitRE)
-	.maybe('/')
-	.endOfLine()
-	.withAnyCase()
-})()
+const vimeoURLRegEx = VerEx()
+.startOfLine()
+.maybe('http')
+.maybe('s')
+.maybe(':')
+.maybe('//')
+.maybe('www.')
+.then('vimeo.com/')
+.maybe('ondemand/')
+.maybe(nameComponentRE)
+.maybe(nameComponentRE)
+.multiple(digitRE)
+.maybe('/')
+.endOfLine()
+.withAnyCase()
+.stopAtFirst(true) // Remove stateful g flag: http://stackoverflow.com/questions/1520800/why-regexp-with-global-flag-in-javascript-give-wrong-results
 	
 	
 function videoIDForURL(videoURL) {
@@ -52,12 +53,20 @@ function videoInfosInVimeoInfoList(videoInfoList, videoInfoOptions) {
 	)))
 }
 	
-function videoInfoForAPIInfo(videoInfoFromAPI, { embedding, includeDimensions = false }) {
+function videoInfoForAPIInfo(
+	videoInfoFromAPI,
+	{
+		embedding,
+		includeDimensions = false,
+		includeDescription = true,
+		includeThumbnail = true
+	}
+) {
 	// /video or /oembed API
 	const videoID = videoInfoFromAPI['id'] || videoInfoFromAPI['video_id']
 	
 	// /oembed API doesn't provide a URL
-	const url = videoInfoFromAPI['url'] || `http://www.vimeo.com/${videoID}`
+	const url = videoInfoFromAPI['url'] || `https://www.vimeo.com/${videoID}`
 	
 	const title = videoInfoFromAPI['title']
 	
@@ -106,7 +115,7 @@ function videoInfoForAPIInfo(videoInfoFromAPI, { embedding, includeDimensions = 
 			embedCode = "<iframe width=\"#{embeddedWidth}\" height=\"#{embeddedHeight}\" src=\"http://www.youtube.com/embed/#{videoID}?wmode=opaque&feature=oembed&showinfo=0&theme=light\" frameborder=\"0\" allowfullscreen></iframe>"
 			*/
 			
-			const oembedURL = vimeoOEmbedURL({
+			return promiseVimeoOEmbed({
 				url,
 				maxwidth: embeddedWidth,
 				width: embeddedWidth,
@@ -114,8 +123,6 @@ function videoInfoForAPIInfo(videoInfoFromAPI, { embedding, includeDimensions = 
 				byline: false,
 				title: false
 			})
-			
-			return axios.get(oembedURL)
 			.then((oembedInfo) => {
 				videoInfo.desktopSize = {
 					embedCode: oembedInfo['html'],
@@ -135,26 +142,21 @@ function videoInfoForAPIInfo(videoInfoFromAPI, { embedding, includeDimensions = 
 	
 	return Promise.resolve(videoInfo)
 }
-	
-	
-function vimeoOEmbedURL(oembedOptionsQuery = {}) {
-	return `http://vimeo.com/api/oembed.json?${querystring.stringify(oembedOptionsQuery)}`
+
+
+function promiseVimeoOEmbed(options = {}) {
+const url = `https://vimeo.com/api/oembed.json?${querystring.stringify(options)}`
+return axios.get(url)
+.then(({ data }) => data)
 }		
 	
 export function infoForVideoWithURL(
 	videoURL,
-	{
-		embedding,
-		includeDimensions = false,
-		includeDescription = true,
-		includeThumbnail = true
-	}
+	videoInfoOptions
 ) {
-	return axios.get(vimeoOEmbedURL(videoURL))
-	.then(({ data: oembedData }) => {
-		const videoID = oembedData['video_id']
-		// TODO: change to https
-		return axios.get(`http://vimeo.com/api/v2/video/${videoID}.json`)
+	return promiseVimeoOEmbed({ url: videoURL })
+	.then((oembedData) => (
+		axios.get(`https://vimeo.com/api/v2/video/${oembedData.video_id}.json`)
 		.then(({ data }) => (
 			videoInfoForAPIInfo(data[0], videoInfoOptions)
 		))
@@ -162,5 +164,5 @@ export function infoForVideoWithURL(
 			console.log('Vimeo /video API error', error)
 			return videoInfoForAPIInfo(oembedData, videoInfoOptions)
 		})
-	})
+	))
 }
