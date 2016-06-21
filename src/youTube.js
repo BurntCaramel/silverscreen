@@ -7,7 +7,7 @@ import VerEx from 'verbal-expressions'
 
 export const sourceType = 'youTube'
 
-const youTubeURLRegEx = /https?:\/\/(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\S*[^\w\-\s])([\w\-]{11})(?=[^\w\-]|$)(?![?=&+%\w.-]*(?:['"][^<>]*>|<\/a>))[?=&+%\w.-]*/ig
+const youTubeURLRegEx = /https?:\/\/(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\S*[^\w\-\s])([\w\-]{11})(?=[^\w\-]|$)(?![?=&+%\w.-]*(?:['"][^<>]*>|<\/a>))[?=&+%\w.-]*/i
 
 function videoIDForURL(videoURL) {
 	const matches = videoURL.match(youTubeURLRegEx)
@@ -34,7 +34,7 @@ function videoInfoForFeedEntry(feedEntry, { embedding, includeDimensions = false
 	const entryURLComponents = entryURL.split(':')
 	const videoID = entryURLComponents[ entryURLComponents.length - 1 ]
 	// TODO: change to https
-	const url = `http://www.youtube.com/watch?v=${videoID}`
+	const url = `https://www.youtube.com/watch?v=${videoID}`
 	
 	const title = feedEntry['title']['$t']
 	
@@ -43,7 +43,7 @@ function videoInfoForFeedEntry(feedEntry, { embedding, includeDimensions = false
 	
 	const description = feedEntry['media$group']['media$description']['$t']
 	
-	const thumbnailImageURL = `http://img.youtube.com/vi/${videoID}/maxresdefault.jpg`
+	const thumbnailImageURL = `https://img.youtube.com/vi/${videoID}/maxresdefault.jpg`
 	
 	let videoInfo = {
 		sourceType,
@@ -80,7 +80,7 @@ function videoInfoForFeedEntry(feedEntry, { embedding, includeDimensions = false
 					embeddedHeight = Math.round(height * scaleFactor)
 				}
 				
-				const embedCode = `<iframe width="${embeddedWidth}" height="${embeddedHeight}" src="http://www.youtube.com/embed/${videoID}?wmode=opaque&amp;feature=oembed&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>`
+				const embedCode = `<iframe width="${embeddedWidth}" height="${embeddedHeight}" src="https://www.youtube.com/embed/${videoID}?wmode=opaque&amp;feature=oembed&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>`
 				
 				videoInfo.desktopSize = {
 					embedCode,
@@ -113,7 +113,7 @@ export function infoForVideoWithURL(
 	// TODO: use videoIDForURL
 	const videoID = videoURLObject.query['v']
 	// TODO: change to https
-	const youTubeVideoFeedURL = `http://gdata.youtube.com/feeds/api/videos/${videoID}?alt=json&v=2`
+	const youTubeVideoFeedURL = `https://gdata.youtube.com/feeds/api/videos/${videoID}?alt=json&v=2`
 	
 	return (
 		axios.get(youTubeVideoFeedURL)
