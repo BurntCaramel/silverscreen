@@ -1,0 +1,28 @@
+{
+  "name": "silver-screen",
+  "version": "1.0.0",
+  "description": "Describe silver-screen here",
+  "main": "lib/index.js",
+  "jsnext:main": "es6/index.js",
+  "files": [
+    "es6",
+    "lib",
+    "umd"
+  ],
+  "scripts": {
+    "build": "nwb build",
+    "clean": "nwb clean",
+    "test": "nwb test",
+    "test:watch": "nwb test --server"
+  },
+  "dependencies": {
+    "open-graph": "^0.1.5"
+  },
+  "devDependencies": {
+    "nwb": "0.11.x"
+  },
+  "author": "",
+  "homepage": "",
+  "license": "MIT",
+  "repository": ""
+}
