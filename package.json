@@ -16,7 +16,8 @@
     "test:watch": "nwb test --server"
   },
   "dependencies": {
-    "open-graph": "^0.1.5"
+    "open-graph": "^0.1.5",
+    "verbal-expressions": "^0.2.1"
   },
   "devDependencies": {
     "nwb": "0.11.x"
