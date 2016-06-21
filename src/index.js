@@ -26,4 +26,10 @@ export function infoForVideoWithURL(videoURL, options) {
 	if (handler) {
 		return handler.infoForVideoWithURL(videoURL, options)
 	}
+	else {
+		return Promise.reject({
+			videoURL,
+			noHandler: true
+		})
+	}
 }
