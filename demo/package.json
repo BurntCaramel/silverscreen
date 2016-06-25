@@ -1,0 +1,19 @@
+{
+  "name": "silverscreen-demo",
+  "version": "0.1.0",
+  "description": "Demo for silverscreen",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Smith",
+  "license": "MIT",
+  "dependencies": {
+    "boom": "^3.2.2",
+    "hapi": "^13.4.1",
+    "joi": "^8.4.2",
+    "ramda": "^0.21.0",
+    "silverscreen": "^0.1.2"
+  }
+}
