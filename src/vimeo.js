@@ -152,7 +152,7 @@ return axios.get(url)
 	
 export function infoForVideoWithURL(
 	videoURL,
-	videoInfoOptions
+	videoInfoOptions = {}
 ) {
 	return promiseVimeoOEmbed({ url: videoURL })
 	.then((oembedData) => (

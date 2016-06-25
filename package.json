@@ -1,7 +1,7 @@
 {
-  "name": "silver-screen",
-  "version": "1.0.0",
-  "description": "Describe silver-screen here",
+  "name": "silverscreen",
+  "version": "0.1.2",
+  "description": "Video info and embedding for YouTube, Vimeo",
   "main": "lib/index.js",
   "jsnext:main": "es6/index.js",
   "files": [
@@ -16,6 +16,7 @@
     "test:watch": "nwb test --server"
   },
   "dependencies": {
+    "axios": "^0.12.0",
     "open-graph": "^0.1.5",
     "verbal-expressions": "^0.2.1"
   },

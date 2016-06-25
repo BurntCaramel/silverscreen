@@ -106,7 +106,7 @@ export function infoForVideoWithURL(
 		includeDimensions = false,
 		includeDescription = true,
 		includeThumbnail = true
-	}
+	} = {}
 ) {
 	// Only accepts URLs like: www.youtube.com/watch?v=# 
 	const videoURLObject = URL.parse(videoURL, true)

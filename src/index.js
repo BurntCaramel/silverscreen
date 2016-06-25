@@ -21,7 +21,7 @@ function handlerForVideoURL(videoURL) {
 	}
 }
 
-export function infoForVideoWithURL(videoURL, options) {
+export function infoForVideoWithURL(videoURL, options = {}) {
 	const handler = handlerForVideoURL(videoURL)
 	if (handler) {
 		return handler.infoForVideoWithURL(videoURL, options)
