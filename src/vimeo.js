@@ -1,7 +1,7 @@
 import axios from 'axios'
 import URL from 'url'
 import querystring from 'querystring'
-import openGraph from 'open-graph'
+//import openGraph from 'open-graph'
 import VerEx from 'verbal-expressions'
 
 
